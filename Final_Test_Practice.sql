@@ -131,20 +131,29 @@ SELECT
 FROM investor;
 
 -- 16. Tỷ lệ diễn viên đoạt giải có phim
-WITH awarded_actors AS (
-    SELECT actor_id, COUNT(DISTINCT awards) AS award_count
-    FROM actor_award
-    GROUP BY actor_id
-),
-actor_films AS (
-    SELECT DISTINCT actor_id
-    FROM film_actor
-)
 SELECT 
-    award_count,
-    COUNT(CASE WHEN actor_id IN (SELECT actor_id FROM actor_films) THEN 1 ELSE NULL END) / COUNT(*) * 100 AS percentage_with_films
-FROM awarded_actors
-GROUP BY award_count;
+    CASE 
+        WHEN a.awards = 'Emmy, Oscar, Tony' THEN '3 awards'
+        WHEN a.awards IN ('Emmy, Oscar', 'Emmy, Tony', 'Oscar, Tony') THEN '2 awards'
+        ELSE '1 awards'
+    END AS num_of_awards,
+    CASE 
+        WHEN a.actor_id IS NULL THEN 0 ELSE 1
+    END AS actor_with_awards
+FROM actor_award a;
+
+SELECT 
+    CASE 
+        WHEN a.awards = 'Emmy, Oscar, Tony' THEN '3 awards'
+        WHEN a.awards IN ('Emmy, Oscar', 'Emmy, Tony', 'Oscar, Tony') THEN '2 awards'
+        ELSE '1 awards'
+    END AS num_of_awards,
+    AVG(CASE 
+            WHEN a.actor_id IS NULL THEN 0 ELSE 1
+        END) AS percent_actor_with_awards
+FROM actor_award a
+GROUP BY num_of_awards;
+
 
 
 /*
