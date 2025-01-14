@@ -130,7 +130,7 @@ SELECT
     company_name
 FROM investor;
 
--- 16. Tỷ lệ diễn viên đoạt giải có phim
+-- 16. 
 SELECT 
     CASE 
         WHEN a.awards = 'Emmy, Oscar, Tony' THEN '3 awards'
